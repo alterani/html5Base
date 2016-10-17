@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang='it' manifest='offline.manifest'>
+<head>
+    <title>Tutti i passi della cache</title>
+    <script>
+    // Funzione di servizio:
+    say = function(message){
+        document.getElementById("cache-steps").
+        insertAdjacentHTML('beforeend',"<li>"+message+";</li>");
+    } 
+    clearlist = function(message){
+        document.getElementById("cache-steps").innerHTML = "";
+    }
+    
+    // L'oggetto che controlla la cache
+    var appCache = window.applicationCache;
+
+    // Nuovi eventi disponbili con le Offline API    
+    appCache.addEventListener('checking', function(ev) { 
+        say("Controllo, se posso, che il .manifest online non sia cambiato");
+    }, false);
+    
+    appCache.addEventListener('noupdate', function(ev) { 
+        say("Il .manifest non &egrave; cambiato");
+    }, false);
+
+    appCache.addEventListener('downloading', function(ev) { 
+        say("Inizio a scaricare i file listati dal manifest che non ho gi&agrave; in cache");
+    }, false);
+
+    appCache.addEventListener('progress', function(ev) { 
+        say("Scarico una risorsa");
+    }, false);
+    
+    appCache.addEventListener('cached', function(ev) { 
+        say("Tutte le risorse sono state scaricate");
+    }, false);
+
+    appCache.addEventListener('updateready', function(ev) { 
+        say("Ho scaricato una nuova versione della cache e sono pronto "+
+            "a sostituirla alla precedente");
+    }, false);
+    
+    appCache.addEventListener('obsolete', function(ev) { 
+        say("Ho cercato il .manifest online ottenendo un 404 o 410 come risposta "  + 
+            "probabilmente il sito non supporta pi&ugrave; funzionalit&agrave; di " + 
+            "caching, cancello la cache in locale.");
+    }, false);
+ 
+    appCache.addEventListener('error', function(ev) { 
+        say("Ops, si &egrave; verificato un errore");
+    }, false);   
+
+    </script>
+</head>
+<body>
+    <button onclick="clearlist();appCache.update();">Forza il controllo della cache</button>
+    <ul id="cache-steps">
+    </ul>
+</body>
+</html>

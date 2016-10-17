@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang='it'>
+<head>
+    <meta charset="utf-8">
+    <title>Five(Dash)Board: tutto sotto controllo!.</title>
+    <script>
+    var worker = null;
+
+    getInfo = function(title){
+        worker.port.postMessage("maggiori_informazioni:" + title);
+    }
+
+    init = function(){
+        worker = new SharedWorker('js/hub.js');
+        worker.port.onmessage = function(evento){
+           nome_comando   = evento.data.split(":")[0]
+           valore_comando = evento.data.substr(nome_comando.length + 1);
+           console.log("Ricevuto comando: " + nome_comando);
+           switch (nome_comando){
+             case 'pronto':
+              worker.port.postMessage("registra_dashboard")
+             break;
+             case 'nuova_fiveboard':
+              document.getElementById("elenco_fiveboard").insertAdjacentHTML('beforeend',
+                  "<li>" + 
+                        "Titolo: " + valore_comando + " " +
+                        "(<a href='javascript:getInfo(\"" + valore_comando +"\");'>" +
+                            "pi&ugrave informazioni" + 
+                        "</a>)" +
+                  "</li>");
+             break;
+             case 'attendi_testo':
+                evento.ports[0].onmessage = function(e){
+                    alert(e.data);
+                }
+             break;
+           }
+        }   
+    }
+    </script>
+</head>
+<body onload="init();">
+    <h1>FiveBoard:</h1>
+    <ol id="elenco_fiveboard">
+    </ol>
+</body>
+</html>

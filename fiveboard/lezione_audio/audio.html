@@ -1,0 +1,38 @@
+<!doctype html> 
+<html> 
+<head>
+  <title>Il suono degli animali</title> 
+  <script>
+    init = function(evento){ 
+      var bottoni = document.querySelectorAll('button'); 
+      for(var b=0; b < bottoni.length; b ++){
+        var effetto_audio = bottoni[b].dataset.effettoAudio; 
+        if(effetto_audio != ""){
+          var audio = new Audio(effetto_audio); 
+          audio.bottone_di_riferimento = bottoni[b]; 
+          audio.addEventListener('canplaythrough',
+            function(evento_load){ 
+              var bottone = evento_load.target.bottone_di_riferimento; 
+              bottone.disabled = false; 
+              bottone.audio_di_riferimento = evento_load.target; 
+              bottone.addEventListener('click',
+                function(evento_click){ 
+                  evento_click.target.audio_di_riferimento.play();
+                }
+              );
+            }
+          );
+        }
+      }
+    }
+window.addEventListener('load',init); </script>
+</head> 
+<body>
+<button type="button" data-effetto-audio="gatto_che_miagola.mp3" disabled> 
+Il verso del gatto...
+</button> 
+<button type="button" data-effetto-audio="cane_che_abbaia.mp3" disabled>
+Il verso del cane... 
+</button>
+</body> 
+</html>

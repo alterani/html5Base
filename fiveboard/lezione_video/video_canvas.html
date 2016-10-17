@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+    <title> Canvas e Video </title>
+    <script>
+        decomposizioneColori = function(video, context, context_nascosto, colori){
+            if(video.paused || video.ended) return false;
+            context_nascosto.drawImage(video,0,0);
+            var fotogramma = context_nascosto.getImageData(0,0,
+                context_nascosto.canvas.width,context_nascosto.canvas.height);
+            var fotogramma_data = fotogramma.data;
+            var rosso = colori.rosso.checked;
+            var verde = colori.verde.checked;
+            var blu   = colori.blu.checked;
+            for(var i=0; i < fotogramma_data.length; i+=4){
+                if (!rosso)  fotogramma_data[i  ] = 0;
+                if (!verde)  fotogramma_data[i+1] = 0;
+                if (!blu  )  fotogramma_data[i+2] = 0;
+            }
+            fotogramma.data = fotogramma_data;
+            context.putImageData(fotogramma,0,0);
+            setTimeout(function(){
+                decomposizioneColori(video, context, context_nascosto, colori)
+            },0);
+        }
+    
+        aspettaIlPlay = function(evento){
+            var video            = document.querySelector('video');
+            video.addEventListener("play", function(evento){
+                var context          = document.querySelector('#canvas_principale').getContext('2d');
+                var context_nascosto = document.querySelector('#canvas_elaborazione').getContext('2d');
+                context.canvas.width = context_nascosto.canvas.width = video.clientWidth;
+                context.canvas.height = context_nascosto.canvas.height = video.clientHeight;
+                decomposizioneColori(evento.target,context,context_nascosto, document.forms.colori);
+            },true);
+        }
+
+        window.addEventListener("load",aspettaIlPlay,true);
+        
+    </script>
+</head>
+<body>
+    <canvas id="canvas_principale"></canvas>
+    <canvas id="canvas_elaborazione" style="display:none;"></canvas>
+    <video  poster="big_buck_bunny/poster.jpg" controls>
+        <source src="big_buck_bunny/trailer.mp4"  type="video/mp4" >
+        <source src="big_buck_bunny/trailer.ogg"  type="video/ogg" >
+        <source src="big_buck_bunny/trailer.webm" type="video/webm">
+    </video>
+    <form name="colori">
+        <fieldset>
+            <legend>Usa le checkbox per controllare i tre canali (RGB)</legend>
+            <label> Rosso <input type="checkbox" name="rosso" checked></label>
+            <label> Verde <input type="checkbox" name="verde" checked></label>
+            <label> Blue  <input type="checkbox" name="blu" checked></label>
+        </fieldset>
+    </form>
+</body>
+</html>

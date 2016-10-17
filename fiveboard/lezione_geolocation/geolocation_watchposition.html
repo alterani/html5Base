@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <title> Geolocation: dove sono? </title>
+    <script>
+    var id_watch = null;
+    
+    inCasoDiSuccesso = function(position){
+       document.getElementById("posizione_corrente").insertAdjacentHTML('beforeend',
+        "<li> Lat: " + position.coords.latitude + ", Lon: " + position.coords.longitude + "</li>"
+       );
+    }
+    
+    sospendiLaRicezione = function(){
+        navigator.geolocation.clearWatch(id_watch);
+    }
+    
+    window.onload = function(){
+        id_watch = navigator.geolocation.watchPosition(inCasoDiSuccesso);
+    }
+    </script>
+</head>
+<body>
+    <h1>La tua posizione attuale</h1>
+    <menu type="toolbar">
+        <button type="button" onclick="sospendiLaRicezione()">
+            sospendi la ricezione di dati geospaziali
+        </button>
+    </menu>
+    <ul id="posizione_corrente">
+    </ul>    
+</body>
+</html>

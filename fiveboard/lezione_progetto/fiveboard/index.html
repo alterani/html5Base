@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang='it' manifest='fiveboard.manifest'>
+<head>
+    <meta charset="utf-8">
+    <title>FiveBoard: uno spazio per gli appunti.</title>
+    <script src="js/application.js" defer></script>
+    <script src="js/canvas.js" defer></script>
+</head>
+<body>
+    <hgroup>
+        <h1>D&igrave; qualcosa </h1>
+        <h2>FiveBoard ricorda tutto</h2>
+    </hgroup>
+    <form name="form_da_ricordare">
+        <menu type="toolbar">
+            <button type="button" onclick="lanciaEvento('salvadato');">
+                Memorizza quanto scritto
+            </button>
+            <button type="button" onclick="lanciaEvento('recuperadato');">
+                Recupera l'ultimo testo memorizzato
+            </button>
+            <button type="button" onclick="EsportaInSVG();">
+                Esporta il canvas corrente in SVG
+            </button>            
+        </menu>
+        <label>Cosa hai in mente? 
+            <textarea name="testo_da_ricordare" required autofocus
+            placeholder="La lista della spesa, il teatro di questa sera ..."
+            dropzone="copy f:text/plain"
+            ondragover="consentiIlDrop(event)"
+            ondrop="caricaIlContenutoTestuale(event,this)"></textarea>
+        </label>
+        <canvas id="drawboard"></canvas>
+    </form>
+</body>
+</html>

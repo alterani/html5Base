@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <title> Geolocation: dove sono? </title>
+    <script>
+    inCasoDiSuccesso = function(position){
+       alert( "Posizione delle: " + position.timestamp.getHours() + ":" + position.timestamp.getMinutes() + "\n" +
+              "Accuratezza delle coordinate: " + position.coords.accuracy + " mt; \n" +
+              "Latitudine: " + position.coords.latitude + " gradi; \n" +
+              "Longitudine: " + position.coords.longitude + "gradi; \n" +
+              "Accuratezza dell'altezza: " + position.coords.altitudeAccuracy + " mt; \n" +
+              "Altezza: " + position.coords.altitude + " mt; \n" +
+              "Direzione: " + position.coords.heading + " gradi\n(0 = Nord, 90 = Ovest, 180 = Sud, 270 = Est);\n" +
+              "Velocita: " + position.coords.speed + " m/s;"
+       );
+       
+    }
+    opzInCasoDiErrore = function(error){
+        alert( "Errore " + error.code + ": " + error.message);
+    }
+    
+    window.onload = function(){
+        navigator.geolocation.getCurrentPosition(inCasoDiSuccesso, opzInCasoDiErrore);
+    }
+    </script>
+</head>
+<body>
+</body>
+</html>

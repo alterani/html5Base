@@ -1,0 +1,12 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="300px" height="300px" viewbox="0 0 300 300"
+    xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <title>Una barchetta in SVG</title>
+    <desc>La stessa barchetta della lezione sui canvas ora in SVG</desc>
+    <path d="M40,170 h220 A150,150 0 0,1 40,170 h110 v-130 v130 h-110 z" 
+        fill="black" stroke="black" stroke-width="1"/>
+    <rect x="150" y="40" width="60" height="30"
+        fill="black" stroke="black" stroke-width="1"/>
+</svg>

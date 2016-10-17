@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang='it'>
+<head>
+    <meta charset="utf-8">
+    <title>Five(Dash)Board: tutto sotto controllo!.</title>
+    <script>
+    var worker = null;
+
+    getInfo = function(title){
+        worker.port.postMessage("maggiori_informazioni:" + title);
+    }
+
+    init = function(){
+        worker = new SharedWorker('js/hub.js');
+        worker.port.onmessage = function(evento){
+           nome_comando   = evento.data.split(":")[0]
+           valore_comando = evento.data.substr(nome_comando.length + 1);
+           console.log("Ricevuto comando: " + nome_comando);
+           switch (nome_comando){
+             case 'pronto':
+              worker.port.postMessage("registra_dashboard")
+             break;
+             case 'nuova_fiveboard':
+              document.getElementById("elenco_fiveboard").insertAdjacentHTML('beforeend',
+                  "<li>" + 
+                        "Titolo: " + valore_comando + " " +
+                        "(<a href='javascript:getInfo(\"" + valore_comando +"\");'>" +
+                            "pi&ugrave informazioni" + 
+                        "</a>)" +
+                  "</li>");
+             break;
+             case 'attendi_testo':
+                evento.ports[0].onmessage = function(e){      
+                    nome_comando   = e.data.split(":")[0]
+                    valore_comando = e.data.substr(nome_comando.length + 1);  
+                    elemento = document.getElementById(nome_comando);
+                    switch (elemento.tagName){
+                        case 'CANVAS':
+                            elemento.width = elemento.width;
+                            if(valore_comando == 'null') return
+                            var context  = elemento.getContext('2d');
+                            var immagine = new Image();
+                            immagine.src = valore_comando; 
+                            context.drawImage(immagine,0,0);
+                        break;
+                        case 'TEXTAREA':
+                            if(valore_comando == 'null')
+                                valore_comando = '';
+                            elemento.value = valore_comando;
+                        break;
+                    }
+                }
+             break;
+           }
+        }   
+    }
+    </script>
+</head>
+<body onload="init();">
+    <h1>FiveBoard:</h1>
+    <ol id="elenco_fiveboard">
+    </ol>
+    <section>
+        <h1>In Osservazione:</h1>
+        <textarea id="testo_corrente" placeholder="testo_corrente" readonly></textarea>
+        <textarea id="testo_memorizzato" placeholder="testo_memorizzato" readonly></textarea>
+        <canvas   id="canvas_corrente">Canvas Corrente</canvas>
+        <canvas   id="canvas_memorizzato">Canvas Memorizzato</canvas>
+    </section>
+</body>
+</html>

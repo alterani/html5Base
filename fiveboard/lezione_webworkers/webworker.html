@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+    <title> WebWorkers: alcune prove </title>
+    <script>
+    window.onload = function(){
+        bot_noioso = new Worker('bot_noioso.js');
+        bot_noioso.onmessage = function(event){
+            bot_noioso.postMessage(prompt(event.data));
+        }
+    }
+    </script>
+</head>
+<body>
+</body>
+</html>

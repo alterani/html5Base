@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+    <title> Canvas: Esempi </title>
+    <script>
+    
+        esempioPixelPerPixel = function(){
+            document.querySelector('body').removeChild(document.querySelector("canvas"));
+            document.querySelector('body').insertAdjacentHTML('afterBegin',
+                "<canvas width='300px' height='300px'></canvas>"
+            );
+            var contesto = document.querySelector('canvas').getContext('2d');
+            contesto.canvas.width = contesto.canvas.width;           
+            disegnaBarchetta(contesto);          
+            var dati_immagine = contesto.getImageData(0,0, 
+                contesto.canvas.width, contesto.canvas.height);
+            
+            var array_dati_immagine = dati_immagine.data;
+            for(var i = 0; i < array_dati_immagine.length; i +=4 ){
+                array_dati_immagine[i  ] = Math.round(Math.random() * 255);
+                array_dati_immagine[i+1] = Math.round(Math.random() * 255);
+                array_dati_immagine[i+2] = Math.round(Math.random() * 255);
+            }
+            dati_immagine.data = array_dati_immagine;
+            contesto.canvas.width = contesto.canvas.width;
+            contesto.putImageData(dati_immagine, 0,0);
+        }
+        
+        esempioTesto = function(){
+            var contesto = document.querySelector('canvas').getContext('2d');
+            contesto.canvas.width = contesto.canvas.width;
+            disegnaBarchetta(contesto);
+            contesto.globalCompositeOperation = "source-out";
+            contesto.font = "34px Georgia"
+            contesto.strokeText("Va va va barchetta", 20, 100);            
+            contesto.fillText("va, naviga naviga naviga", 20, 140);  
+            contesto.fillText("naviga e mai si", 20, 180); 
+            contesto.fillText("fermera'...", 20, 220);            
+        }
+        
+        esempioImmagine = function(){
+            var contesto = document.querySelector('canvas').getContext('2d');
+            contesto.canvas.width = contesto.canvas.width;
+            var immagine = new Image();
+            immagine.src = "http://img227.imageshack.us/img227/7092/marei.jpg";
+            contesto.drawImage(immagine,0,0);
+            disegnaBarchetta(contesto);
+        }   
+        
+        esempioModificatoriE = function(){
+            var contesto = document.querySelector('canvas').getContext('2d');
+            contesto.canvas.width = contesto.canvas.width;
+            contesto.shadowColor = '#003300'
+            contesto.shadowOffsetX = 10;
+            contesto.shadowOffsetY = 10;
+            contesto.shadowBlur = 30;
+            disegnaBarchetta(contesto);
+        }
+        
+        esempioModificatoriC = function(){
+            var contesto = document.querySelector('canvas').getContext('2d');
+            contesto.canvas.width = contesto.canvas.width;
+            contesto.strokeStyle = "#FF0000";
+            contesto.lineWidth   = "5";
+            var gradiente = contesto.createRadialGradient(150, 150, 30, 150, 160, 100);
+            gradiente.addColorStop(0.5, '#0000FF');
+            gradiente.addColorStop(0.1, '#000000');
+            contesto.fillStyle = gradiente;
+            disegnaBarchetta(contesto);
+        }
+        
+        esempioModificatoriB = function(){
+            var contesto = document.querySelector('canvas').getContext('2d');
+            contesto.canvas.width = contesto.canvas.width;            
+            contesto.globalAlpha = 0.5;
+            disegnaBarchetta(contesto);
+            contesto.translate(40,-0);
+            contesto.globalCompositeOperation = "source-out";
+            disegnaBarchetta(contesto);
+        }        
+        
+        esempioModificatoriA = function(){
+            var contesto = document.querySelector('canvas').getContext('2d');
+            contesto.canvas.width = contesto.canvas.width;            
+            contesto.scale(0.5,0.5);
+            contesto.rotate(0.5);
+            contesto.translate(300,-100);
+            disegnaBarchetta(contesto);
+        }
+        
+        esempioPath = function(){
+            var contesto = document.querySelector('canvas').getContext('2d');
+            contesto.canvas.width = contesto.canvas.width;   
+            disegnaBarchetta(contesto);
+        }
+        
+        disegnaBarchetta = function(contesto){
+            contesto.beginPath();
+            contesto.moveTo(40,170);
+            contesto.lineTo(260,170);
+            contesto.arcTo(150,250,40,170,150);
+            contesto.lineTo(40,170);
+            contesto.moveTo(150,170);
+            contesto.lineTo(150,40);
+            contesto.rect(150,40,60,30);
+            contesto.stroke();
+            contesto.fill();
+        }
+    </script>
+</head>
+<body>
+    <canvas width="300px" height="300px"></canvas>
+    <button type="button" onclick="esempioPath();"> Path </button>
+    <button type="button" onclick="esempioModificatoriA();"> esempioModificatoriA </button>
+    <button type="button" onclick="esempioModificatoriB();"> esempioModificatoriB </button>
+    <button type="button" onclick="esempioModificatoriC();"> esempioModificatoriC </button>
+    <button type="button" onclick="esempioModificatoriE();"> esempioModificatoriE </button>
+    <button type="button" onclick="esempioImmagine();">      esempioImmagine </button>
+    <button type="button" onclick="esempioTesto();">         esempioTesto </button>
+    <button type="button" onclick="esempioPixelPerPixel();"> esempioPixelPerPixel </button>
+    
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+    <title>Big Buck Bunny, il trailer</title>
+    <script>
+        var video;
+        eseguiIlPlay = function(){
+            video.play();
+        }
+        eseguiIlPause = function(){
+            video.pause();
+        }
+        cambiaVolume = function(evento){
+            video.volume = evento.target.value;
+        }
+        doppiaVelocita = function(){
+            video.playbackRate = 2.0;
+        }
+        posizionatiAlCentro = function(){
+            video.currentTime = Math.round(video.duration / 2);
+        }
+        generaTesto = function(intervalli){
+            var testo = "Ci sono: " + intervalli.length + " intervalli";
+            for(var i=0; i < intervalli.length; i++){
+                testo +="\n\tda: " + intervalli.start(i) + " a:" + intervalli.end(i) + " secondi"
+            }
+            return testo;
+        }
+        ottieniInformazioni = function(){
+            var caricato     = video.buffered;
+            var riprodotto   = video.played;
+            var ricercabile  = video.seekable;
+            alert(  "Alcune informazioni sul video \n" +
+                    "= Caricato =\n" + generaTesto(caricato) + "\n" +
+                    "= Riprodotto =\n" + generaTesto(riprodotto) + "\n" +
+                    "= Ricercabile =\n" + generaTesto(ricercabile)
+            );
+        }
+        window.addEventListener('load',function(e){
+            video = document.querySelector('video');
+        },true)
+    </script>
+</head>
+<body>
+    <menu type="toolbar">
+        <button type="button" onclick="eseguiIlPlay()" > Play  </button>
+        <button type="button" onclick="eseguiIlPause()"> Pause </button>
+        <button type="button" onclick="doppiaVelocita()"> x2 </button>
+        <button type="button" onclick="posizionatiAlCentro()"> Centro </button>
+        <button type="button" onclick="ottieniInformazioni()"> Info </button>
+        <label> Volume: </label>
+        <input  type="range" min="0.0" max="1.0" 
+                step="0.1" value="0.5" oninput="cambiaVolume(event)" >
+    </menu>
+    <video  poster="big_buck_bunny/poster.jpg">
+        <source src="big_buck_bunny/trailer.mp4"  type="video/mp4" >
+        <source src="big_buck_bunny/trailer.ogg"  type="video/ogg" >
+        <source src="big_buck_bunny/trailer.webm" type="video/webm">
+    </video>
+</body>
+</html>

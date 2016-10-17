@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang='it' manifest='fiveboard.manifest'>
+<head>
+    <meta charset="utf-8">
+    <title>FiveBoard: uno spazio per gli appunti.</title>
+    <script src="js/application.js" defer></script>
+</head>
+<body>
+    <hgroup>
+        <h1>D&igrave; qualcosa </h1>
+        <h2>FiveBoard ricorda tutto</h2>
+    </hgroup>
+    <form name="form_da_ricordare">
+        <menu type="toolbar">
+            <button type="button" 
+		onclick="salvaIlDato(this.form.elements['testo_da_ricordare'].value);">
+                Memorizza quanto scritto
+            </button>
+            <button type="button" 
+		onclick="recuperaIlDato(this.form.elements['testo_da_ricordare']);">
+                Recupera l'ultimo testo memorizzato
+            </button>
+        </menu>
+        <label>Cosa hai in mente? 
+            <textarea name="testo_da_ricordare" required autofocus
+            placeholder="La lista della spesa, il teatro di questa sera ..."></textarea>
+        </label>
+    </form>
+</body>
+</html>

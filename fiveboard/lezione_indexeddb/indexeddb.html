@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+    <title> WebLibreria: gestionale per librerie </title>
+    <script>
+    setup = function(){
+        if ('webkitIndexedDB' in window){
+            indexedDB = webkitIndexedDB;
+            IDBCursor = webkitIDBCursor;
+            IDBKeyRange = webkitIDBKeyRange;
+            IDBTransaction = webkitIDBTransaction;
+        }else if ('moz_indexedDB' in window){
+            indexedDB = moz_indexedDB;
+        }
+    }
+    init = function(){
+        setup();
+        var request = indexedDB.open("WebLibreria", "Il gestionale per librerie");
+        request.onsuccess = controllaVersione;
+        request.onerror = function(){console.log("Ops, errore");}
+    }
+    controllaVersione = function(event){
+        window.database = event.result;
+        if(database.version != "1.0"){
+            var request = database.setVersion("1.0");
+            request.onsuccess = aggiornaLoSchema;
+            request.onerror =  function(){console.log("Ops, errore");}
+        }else{
+            recuperaLibri();
+        }
+    }
+    aggiornaLoSchema = function(){
+        window.transazione = event.result;
+        transazione.oncomplete = recuperaLibri;
+        transazione.onabort = function(){console.log("Ops, errore");}
+        var libri  = database.createObjectStore("libri", "isbn", false);
+        var titolo = libri.createIndex("titolo", "titolo", false);
+        var autore = libri.createIndex("autore", "autore", false);
+    }
+    recuperaLibri = function(){
+        window.transazione = database.transaction(["libri"], 
+            IDBTransaction.READ_WRITE, 0);
+        var request = transazione.objectStore("libri").openCursor();
+        request.onsuccess = stampaLibri;
+        request.onerror = function(){console.log("Ops, errore");}
+    }
+    stampaLibri = function(){
+        var cursor = event.result;
+        if( cursor != null){
+            document.getElementById("catalogo_libri").insertAdjacentHTML('beforeend',
+                "<li>" + cursor.value.autore + ": " + cursor.value.titolo + 
+                " (ISBN: "+ cursor.value.isbn +"); </li>");
+            cursor.continue();
+        }
+    }   
+    aggiungiLibro = function(data){
+        var elements = data.elements
+        window.transazione = database.transaction(["libri"], 
+            IDBTransaction.READ_WRITE, 0);
+        var request = transazione.objectStore("libri").put({
+            titolo: elements['titolo'].value,
+            autore: elements['autore'].value,
+            isbn:   elements[  'isbn'].value
+        },  elements[  'isbn'].value);
+       request.onsuccess = function(){pulisciLista(); recuperaLibri();}
+       request.onerror   = function(){console.log("Ops, errore");}
+    }
+    pulisciLista = function(){
+        document.getElementById("catalogo_libri").innerHTML ="";
+    }
+    ricercaLibro = function(autore){
+        pulisciLista();
+        window.transazione = database.transaction(["libri"], 
+            IDBTransaction.READ_WRITE, 0);
+        var request = transazione.objectStore("libri").index('autore').openCursor(
+            IDBKeyRange.bound(autore,autore+"z",true,true), IDBCursor.NEXT);
+        request.onsuccess = stampaLibri;
+        request.onerror = function(){console.log("Ops, errore");}
+    }
+    </script>
+</head>
+<body onload="init();">
+    <h1> WebLibreria: gestionale per librerie</h1>
+    <section>
+    <h1>Elenco dei libri</h1>
+        <ul id="catalogo_libri">
+        </ul>
+    </section>
+    <aside>
+        <h1>Aggiungi un nuovo libro</h1> 
+        <form name="aggiungi_libro" onsubmit="aggiungiLibro(this); return false;">
+            <fieldset name="info_libro">
+                <legend>Dati richiesti:</legend>
+                <label>Titolo:
+                    <input name="titolo" 
+                           type="text" required placeholder="es: Dalla terra alla luna">
+                </label>
+                <label>Autore:
+                    <input name="autore" 
+                           type="text" required placeholder="es: Jules Verne">
+                </label>
+                <label>ISBN:
+                    <input name="isbn" 
+                           type="text" required placeholder="es: 8862221320">
+                </label>             
+                <input type="submit" value="Aggiungi">   
+            </fieldset>
+        </form>
+        <h1>Cerca un libro per autore</h1> 
+        <form name="cerca_per_autore" onsubmit="ricercaLibro(this.elements['keyword'].value); return false;">
+            <fieldset name="campi_ricerca">
+                <legend>Ricerca per autore:</legend>
+                <label>Inizio del nome:
+                    <input name="keyword" 
+                           type="search" required placeholder="es: Franc">
+                </label>
+                <input type="submit" value="Ricerca">   
+            </fieldset>
+        </form>
+    </aside>
+</body>
+</html>
